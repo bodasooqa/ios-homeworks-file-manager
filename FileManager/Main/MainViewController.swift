@@ -12,28 +12,13 @@ import FileManagerService
 
 class MainViewController: UIViewController {
     
-    private lazy var mainView = MainView()
+    lazy var tableView = UITableView(frame: .zero, style: .grouped)
     
     private lazy var fileManagerService: FileManagerService = .shared
     
     private var files: [URL] {
         fileManagerService.files
     }
-    
-    lazy var pickerConfiguration: PHPickerConfiguration = {
-        pickerConfiguration = PHPickerConfiguration(photoLibrary: .shared())
-        pickerConfiguration.selectionLimit = 3
-        pickerConfiguration.filter = .images
-        
-        return pickerConfiguration
-    }()
-    
-    lazy var pickerVC: PHPickerViewController = {
-        pickerVC = PHPickerViewController(configuration: pickerConfiguration)
-        pickerVC.delegate = self
-        
-        return pickerVC
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,43 +29,37 @@ class MainViewController: UIViewController {
     }
     
     private func getFiles() {
-        fileManagerService.getFiles {
-            mainView.tableView.reloadData()
-        }
+        fileManagerService.getFiles()
+        tableView.reloadData()
     }
     
     private func configureView() {
-        view = mainView
+        view.backgroundColor = .white
         
         configureTableView()
     }
     
     private func configureTableView() {
-        mainView.tableView.delegate = self
-        mainView.tableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         
-        mainView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
-        mainView.configureTableView()
+        view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
     
     private func configureNavBar() {
         title = "File Manager"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showImagePicker))
-    }
-    
-    @objc private func showImagePicker() {
-        present(pickerVC, animated: true)
-    }
-    
-    private func handleError(_ error: Error) {
-        let vc = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        let action = UIAlertAction(title: "Ok", style: .default)
-        
-        vc.addAction(action)
-        
-        present(vc, animated: true)
     }
     
 }
@@ -105,45 +84,28 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            fileManagerService.removeFile(by: files[indexPath.row]) {
-                mainView.tableView.reloadData()
-            }
+            fileManagerService.removeFile(by: files[indexPath.row])
+            tableView.reloadData()
         }
     }
     
 }
 
-extension MainViewController: PHPickerViewControllerDelegate {
+extension MainViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true)
+    @objc private func showImagePicker() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
         
-        let group = DispatchGroup()
-        
-        for result in results {
-            group.enter()
-            
-            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-                result.itemProvider.loadObject(ofClass: UIImage.self) { reading, error in
-                    defer {
-                        group.leave()
-                    }
-                    
-                    if let error = error {
-                        self.handleError(error)
-                        return
-                    }
-
-                    if let image = reading as? UIImage, let data = image.jpegData(compressionQuality: 1) {
-                        self.fileManagerService.createFile(file: data)
-                    }
-                }
-            }
-        }
-        
-        group.notify(queue: .main) {
-            self.getFiles()
-        }
+        present(imagePicker, animated: true)
     }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage, let data = image.jpegData(compressionQuality: 1) {
+            self.fileManagerService.createFile(file: data)
+            self.getFiles()
+        }
+        picker.dismiss(animated: true)
+    }
 }

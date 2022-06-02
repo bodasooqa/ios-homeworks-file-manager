@@ -40,7 +40,10 @@ class MainViewController: UIViewController {
         
         configureNavBar()
         configureView()
-        
+        getFiles()
+    }
+    
+    private func getFiles() {
         fileManagerService.getFiles {
             mainView.tableView.reloadData()
         }
@@ -56,7 +59,7 @@ class MainViewController: UIViewController {
         mainView.tableView.delegate = self
         mainView.tableView.dataSource = self
         
-        mainView.tableView.register(PhotoTableViewCell.self, forCellReuseIdentifier: "cell")
+        mainView.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
         mainView.configureTableView()
     }
@@ -89,11 +92,23 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = PhotoTableViewCell(style: .default, reuseIdentifier: "cell")
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
         
-        cell.textLabel?.text = "Row \(files[indexPath.row].description)"
+        let path = files[indexPath.row].path
+        let splitedPath = files[indexPath.row].path.split(separator: "/")
         
+        cell.textLabel?.text = String(splitedPath[splitedPath.count - 1])
+        cell.imageView?.image = fileManagerService.getFile(by: path)
+
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            fileManagerService.removeFile(by: files[indexPath.row]) {
+                mainView.tableView.reloadData()
+            }
+        }
     }
     
 }
@@ -127,9 +142,7 @@ extension MainViewController: PHPickerViewControllerDelegate {
         }
         
         group.notify(queue: .main) {
-            self.fileManagerService.getFiles {
-                self.mainView.tableView.reloadData()
-            }
+            self.getFiles()
         }
     }
     

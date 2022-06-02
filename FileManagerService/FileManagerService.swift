@@ -5,6 +5,8 @@
 //  Created by t.lolaev on 02.06.2022.
 //
 
+import UIKit
+
 public class FileManagerService {
     
     public static let shared = FileManagerService()
@@ -24,7 +26,7 @@ public class FileManagerService {
     // Please use .shared
     private init() {}
     
-    public func getFiles(completion: () -> Void) -> Void {
+    public func getFiles(completion: () -> Void) {
         guard let documentsPath = documentsPath else { return }
         
         do {
@@ -37,9 +39,27 @@ public class FileManagerService {
     
     public func createFile(file: Data) {
         guard let documentsPath = documentsPath else { return }
+        
         let imagePath = documentsPath.appendingPathComponent("image-\(Date().timeIntervalSince1970).jpg")
         
-        self.fileManager.createFile(atPath: imagePath.path, contents: file)
+        fileManager.createFile(atPath: imagePath.path, contents: file)
+    }
+    
+    public func getFile(by url: String) -> UIImage? {
+        return UIImage(contentsOfFile: url)
+    }
+    
+    public func removeFile(by fileUrl: URL, completion: () -> Void) {
+        do {
+            try fileManager.removeItem(atPath: fileUrl.path)
+            files.removeAll { url in
+                url == fileUrl
+            }
+            completion()
+        } catch {
+            return
+        }
+        
     }
     
 }

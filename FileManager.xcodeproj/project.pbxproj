@@ -18,7 +18,6 @@
 		C2B96CDD2848187C00F8BCE2 /* FileManagerService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2B96CD72848187C00F8BCE2 /* FileManagerService.framework */; };
 		C2B96CDE2848187C00F8BCE2 /* FileManagerService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2B96CD72848187C00F8BCE2 /* FileManagerService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2B96CE4284818C000F8BCE2 /* FileManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B96CE3284818C000F8BCE2 /* FileManagerService.swift */; };
-		C2B96CE628491A1600F8BCE2 /* PhotoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B96CE528491A1600F8BCE2 /* PhotoTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,7 +57,6 @@
 		C2B96CD72848187C00F8BCE2 /* FileManagerService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FileManagerService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2B96CD92848187C00F8BCE2 /* FileManagerService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileManagerService.h; sourceTree = "<group>"; };
 		C2B96CE3284818C000F8BCE2 /* FileManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerService.swift; sourceTree = "<group>"; };
-		C2B96CE528491A1600F8BCE2 /* PhotoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,7 +115,6 @@
 			children = (
 				C2B96CCE28480AE000F8BCE2 /* MainViewController.swift */,
 				C2B96CD02848131F00F8BCE2 /* MainView.swift */,
-				C2B96CE528491A1600F8BCE2 /* PhotoTableViewCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -246,7 +243,6 @@
 			files = (
 				C2B96CBE284809A900F8BCE2 /* ViewController.swift in Sources */,
 				C2B96CBA284809A800F8BCE2 /* AppDelegate.swift in Sources */,
-				C2B96CE628491A1600F8BCE2 /* PhotoTableViewCell.swift in Sources */,
 				C2B96CBC284809A900F8BCE2 /* SceneDelegate.swift in Sources */,
 				C2B96CD12848131F00F8BCE2 /* MainView.swift in Sources */,
 				C2B96CCF28480AE000F8BCE2 /* MainViewController.swift in Sources */,

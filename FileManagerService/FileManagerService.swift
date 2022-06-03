@@ -9,8 +9,6 @@ import UIKit
 
 public class FileManagerService {
     
-    public static let shared = FileManagerService()
-    
     private lazy var fileManager = FileManager.default
     
     private var documentsPath: URL? {
@@ -21,18 +19,15 @@ public class FileManagerService {
         }
     }
     
-    public var files = [URL]()
+    public init() {}
     
-    // Please use .shared
-    private init() {}
-    
-    public func getFiles() {
-        guard let documentsPath = documentsPath else { return }
+    public func getFiles() -> [URL]? {
+        guard let documentsPath = documentsPath else { return nil }
         
         do {
-            files = try fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
+            return try fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
         } catch {
-            return
+            return nil
         }
     }
     
@@ -49,12 +44,10 @@ public class FileManagerService {
         return UIImage(contentsOfFile: url)
     }
     
-    public func removeFile(by fileUrl: URL) {
+    public func removeFile(by fileUrl: URL, callback: @escaping () -> Void) {
         do {
             try fileManager.removeItem(atPath: fileUrl.path)
-            files.removeAll { url in
-                url == fileUrl
-            }
+            callback()
         } catch {
             return
         }

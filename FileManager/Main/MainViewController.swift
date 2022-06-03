@@ -12,13 +12,11 @@ import FileManagerService
 
 class MainViewController: UIViewController {
     
-    lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     
-    private lazy var fileManagerService: FileManagerService = .shared
+    private lazy var fileManagerService = FileManagerService()
     
-    private var files: [URL] {
-        fileManagerService.files
-    }
+    private var files: [URL] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,8 +27,10 @@ class MainViewController: UIViewController {
     }
     
     private func getFiles() {
-        fileManagerService.getFiles()
-        tableView.reloadData()
+        if let files = fileManagerService.getFiles() {
+            self.files = files
+            tableView.reloadData()
+        }
     }
     
     private func configureView() {
@@ -71,7 +71,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
         let path = files[indexPath.row].path
         let splitedPath = files[indexPath.row].path.split(separator: "/")
@@ -83,9 +83,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let fileUrl = files[indexPath.row]
+        
         if editingStyle == .delete {
-            fileManagerService.removeFile(by: files[indexPath.row])
-            tableView.reloadData()
+            fileManagerService.removeFile(by: fileUrl) {
+                self.files.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
         }
     }
     

@@ -10,6 +10,9 @@ import KeychainService
 
 class MainViewController: UIViewController {
     
+    private static let username = "bodasooqa"
+    private static let serviceName = "file-manager"
+    
     private lazy var mainView = MainView()
     
     lazy var filesVC = FilesViewController()
@@ -17,6 +20,7 @@ class MainViewController: UIViewController {
     lazy var keychainService = KeychainService()
     
     var cachedPassword: String?
+    var passwordFromKeychain: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,8 +38,11 @@ class MainViewController: UIViewController {
     
     private func checkPassword() {
         do {
-            if let data = try keychainService.get(recordGetting: KeychainRecordGetting(username: "bodasooqa", service: "my-service")) {
-                print(data)
+            if let data = try keychainService.get(recordGetting: KeychainRecordGetting(username: Self.username, service: Self.serviceName)) {
+                passwordFromKeychain = String(decoding: data, as: UTF8.self)
+                if let passwordFromKeychain = passwordFromKeychain {
+                    print(passwordFromKeychain)
+                }
             }
         } catch KeychainServiceError.notFound {
             print("There is no correct data")
@@ -57,11 +64,17 @@ class MainViewController: UIViewController {
     @objc private func onAcceptTouch() {
         if let cachedPassword = cachedPassword {
             if let passwordTextFieldText = mainView.passwordTextField.text, passwordTextFieldText == cachedPassword {
-                configureTabBar()
-                updateAcceptButtonTitle(isEntered: false)
+                if let passwordFromKeychain = passwordFromKeychain {
+                    if passwordFromKeychain == passwordTextFieldText {
+                        logIn()
+                    } else {
+                        rejectLogIn()
+                    }
+                } else {
+                    logIn(withSave: true)
+                }
             } else {
-                handleError("Incorrect password. Please try again.")
-                updateAcceptButtonTitle(isEntered: false)
+                rejectLogIn()
             }
         } else {
             cachedPassword = mainView.passwordTextField.text
@@ -78,9 +91,37 @@ class MainViewController: UIViewController {
         }
     }
     
+    private func logIn(withSave: Bool? = false) {
+        if let withSave = withSave, withSave {
+            savePassword()
+        }
+        
+        configureTabBar()
+        updateAcceptButtonTitle(isEntered: false)
+    }
+    
+    private func rejectLogIn() {
+        handleError("Incorrect password. Please try again.")
+        updateAcceptButtonTitle(isEntered: false)
+    }
+    
     private func resetPasswrodTextFieldText() {
         mainView.passwordTextField.text = ""
         mainView.acceptButton.isEnabled = false
+    }
+    
+    private func savePassword() {
+        if let cachedPassword = cachedPassword {
+            do {
+                try keychainService.save(record: KeychainRecord(username: Self.username, service: Self.serviceName, password: cachedPassword))
+            } catch KeychainServiceError.duplicate {
+                handleError("The password already exists")
+            } catch KeychainServiceError.passToData {
+                handleError("Data conversion error")
+            } catch {
+                handleError("KeychainService error: \"\(error)\"")
+            }
+        }
     }
     
     private func configureTabBar() {

@@ -8,9 +8,15 @@
 import Security
 
 public struct KeychainRecord {
-    public let username: String
-    public let service: String
-    public let password: String
+    let username: String
+    let service: String
+    let password: String
+    
+    public init(username: String, service: String, password: String) {
+        self.username = username
+        self.service = service
+        self.password = password
+    }
 }
 
 public struct KeychainRecordGetting {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import KeychainService
 
 class MainViewController: UIViewController {
     
@@ -13,10 +14,15 @@ class MainViewController: UIViewController {
     
     lazy var filesVC = FilesViewController()
     
+    lazy var keychainService = KeychainService()
+    
+    var cachedPassword: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureView()
+        checkPassword()
     }
     
     private func configureView() {
@@ -24,6 +30,18 @@ class MainViewController: UIViewController {
         
         mainView.passwordTextField.addTarget(self, action: #selector(onPasswordChange), for: .editingChanged)
         mainView.acceptButton.addTarget(self, action: #selector(onAcceptTouch), for: .touchUpInside)
+    }
+    
+    private func checkPassword() {
+        do {
+            if let data = try keychainService.get(recordGetting: KeychainRecordGetting(username: "bodasooqa", service: "my-service")) {
+                print(data)
+            }
+        } catch KeychainServiceError.notFound {
+            print("There is no correct data")
+        } catch {
+            print("Something went wrong")
+        }
     }
     
     @objc private func onPasswordChange() {
@@ -37,7 +55,32 @@ class MainViewController: UIViewController {
     }
     
     @objc private func onAcceptTouch() {
-        configureTabBar()
+        if let cachedPassword = cachedPassword {
+            if let passwordTextFieldText = mainView.passwordTextField.text, passwordTextFieldText == cachedPassword {
+                configureTabBar()
+                updateAcceptButtonTitle(isEntered: false)
+            } else {
+                handleError("Incorrect password. Please try again.")
+                updateAcceptButtonTitle(isEntered: false)
+            }
+        } else {
+            cachedPassword = mainView.passwordTextField.text
+            updateAcceptButtonTitle(isEntered: true)
+        }
+    }
+    
+    private func updateAcceptButtonTitle(isEntered: Bool) {
+        mainView.acceptButton.setTitle(isEntered ? "Re-enter the password" : "Enter the password", for: .normal)
+        resetPasswrodTextFieldText()
+        
+        if !isEntered {
+            cachedPassword = nil
+        }
+    }
+    
+    private func resetPasswrodTextFieldText() {
+        mainView.passwordTextField.text = ""
+        mainView.acceptButton.isEnabled = false
     }
     
     private func configureTabBar() {
@@ -52,6 +95,15 @@ class MainViewController: UIViewController {
         tabBarVC.modalPresentationStyle = .fullScreen
         
         navigationController?.pushViewController(tabBarVC, animated: true)
+    }
+    
+    private func handleError(_ errorDescription: String) {
+        let alert = UIAlertController(title: "Error", message: errorDescription, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "Ok", style: .default)
+        
+        alert.addAction(alertAction)
+        
+        present(alert, animated: true)
     }
     
 }

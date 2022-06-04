@@ -23,7 +23,8 @@ class MainView: UIView {
     
     public lazy var acceptButton: UIButton = {
         acceptButton = Button()
-        acceptButton.setTitle("Create password", for: .normal)
+        acceptButton.setTitle("Enter the password", for: .normal)
+        acceptButton.setTitle("Password is incorrect", for: .disabled)
         acceptButton.isEnabled = false
         acceptButton.backgroundColor = .systemBlue
         acceptButton.layer.masksToBounds = true

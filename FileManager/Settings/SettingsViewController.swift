@@ -53,11 +53,14 @@ class SettingsViewController: UIViewController {
     
     private func checkUserDefaults() {
         if let sortOption = userDefaults.string(forKey: "sort-option") {
-            settingsView.sortTextField.text = sortOption
+            selectedSortOption = sortOption
             
             if let selectedOptionIndex = sortOptions.firstIndex(of: sortOption) {
                 pickerView.selectRow(selectedOptionIndex, inComponent: 0, animated: false)
             }
+        } else {
+            selectedSortOption = sortOptions[0]
+            pickerView.selectRow(0, inComponent: 0, animated: false)
         }
     }
     

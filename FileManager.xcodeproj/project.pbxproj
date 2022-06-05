@@ -15,6 +15,8 @@
 		C2106E77284AC96D00195A7C /* KeychainService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2106E71284AC96D00195A7C /* KeychainService.framework */; };
 		C2106E78284AC96D00195A7C /* KeychainService.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C2106E71284AC96D00195A7C /* KeychainService.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C2106E7D284AC98600195A7C /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2106E7C284AC98600195A7C /* KeychainService.swift */; };
+		C2106E80284BA28900195A7C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2106E7F284BA28900195A7C /* SettingsViewController.swift */; };
+		C2106E82284BA5EE00195A7C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2106E81284BA5EE00195A7C /* SettingsView.swift */; };
 		C2B96CBA284809A800F8BCE2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B96CB9284809A800F8BCE2 /* AppDelegate.swift */; };
 		C2B96CBC284809A900F8BCE2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B96CBB284809A900F8BCE2 /* SceneDelegate.swift */; };
 		C2B96CC3284809AE00F8BCE2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C2B96CC2284809AE00F8BCE2 /* Assets.xcassets */; };
@@ -66,6 +68,8 @@
 		C2106E71284AC96D00195A7C /* KeychainService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KeychainService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2106E73284AC96D00195A7C /* KeychainService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeychainService.h; sourceTree = "<group>"; };
 		C2106E7C284AC98600195A7C /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		C2106E7F284BA28900195A7C /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		C2106E81284BA5EE00195A7C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C2B96CB6284809A800F8BCE2 /* FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2B96CB9284809A800F8BCE2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C2B96CBB284809A900F8BCE2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -132,6 +136,15 @@
 			path = KeychainService;
 			sourceTree = "<group>";
 		};
+		C2106E7E284BA27400195A7C /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C2106E7F284BA28900195A7C /* SettingsViewController.swift */,
+				C2106E81284BA5EE00195A7C /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		C2B96CAD284809A800F8BCE2 = {
 			isa = PBXGroup;
 			children = (
@@ -156,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				C2106E65284AB29500195A7C /* components */,
+				C2106E7E284BA27400195A7C /* Settings */,
 				C2B96CCD28480ACE00F8BCE2 /* Files */,
 				C2106E62284AAB8F00195A7C /* Main */,
 				C2B96CB9284809A800F8BCE2 /* AppDelegate.swift */,
@@ -347,8 +361,10 @@
 				C2106E6B284AB7A400195A7C /* Button.swift in Sources */,
 				C2B96CBA284809A800F8BCE2 /* AppDelegate.swift in Sources */,
 				C2106E69284AB35500195A7C /* MainView.swift in Sources */,
+				C2106E82284BA5EE00195A7C /* SettingsView.swift in Sources */,
 				C2B96CBC284809A900F8BCE2 /* SceneDelegate.swift in Sources */,
 				C2B96CCF28480AE000F8BCE2 /* FilesViewController.swift in Sources */,
+				C2106E80284BA28900195A7C /* SettingsViewController.swift in Sources */,
 				C2106E67284AB2B200195A7C /* TextField.swift in Sources */,
 				C2106E64284AABAF00195A7C /* MainViewController.swift in Sources */,
 			);

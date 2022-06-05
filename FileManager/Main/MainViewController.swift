@@ -16,6 +16,7 @@ class MainViewController: UIViewController {
     private lazy var mainView = MainView()
     
     lazy var filesVC = FilesViewController()
+    lazy var settingsVC = SettingsViewController()
     
     lazy var keychainService = KeychainService()
     
@@ -26,7 +27,6 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         configureView()
-        checkPassword()
     }
     
     private func configureView() {
@@ -40,9 +40,6 @@ class MainViewController: UIViewController {
         do {
             if let data = try keychainService.get(recordGetting: KeychainRecordGetting(username: Self.username, service: Self.serviceName)) {
                 passwordFromKeychain = String(decoding: data, as: UTF8.self)
-                if let passwordFromKeychain = passwordFromKeychain {
-                    print(passwordFromKeychain)
-                }
             }
         } catch KeychainServiceError.notFound {
             print("There is no correct data")
@@ -64,6 +61,8 @@ class MainViewController: UIViewController {
     @objc private func onAcceptTouch() {
         if let cachedPassword = cachedPassword {
             if let passwordTextFieldText = mainView.passwordTextField.text, passwordTextFieldText == cachedPassword {
+                checkPassword()
+                
                 if let passwordFromKeychain = passwordFromKeychain {
                     if passwordFromKeychain == passwordTextFieldText {
                         logIn()
@@ -127,14 +126,20 @@ class MainViewController: UIViewController {
     private func configureTabBar() {
         let tabBarVC = UITabBarController()
         let filesNavVC = UINavigationController(rootViewController: filesVC)
-        let settingsNavVC = UINavigationController(rootViewController: UIViewController())
+        let settingsNavVC = UINavigationController(rootViewController: settingsVC)
+        
+        filesVC.title = "File Manager"
+        settingsVC.title = "Settings"
         
         filesNavVC.tabBarItem.image = UIImage(systemName: "house")
         settingsNavVC.tabBarItem.image = UIImage(systemName: "gear")
         
-        tabBarVC.setViewControllers([filesNavVC, settingsNavVC], animated: true)
+        settingsVC.delegate = filesVC
+        
+        tabBarVC.setViewControllers([filesNavVC, settingsNavVC], animated: false)
         tabBarVC.modalPresentationStyle = .fullScreen
         
+        navigationController?.setNavigationBarHidden(true, animated: true)
         navigationController?.pushViewController(tabBarVC, animated: true)
     }
     

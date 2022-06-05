@@ -45,7 +45,7 @@ public class KeychainService {
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: recordGetting.service,
             kSecAttrAccount: recordGetting.username,
-            kSecReturnData: kCFBooleanTrue,
+            kSecReturnData: kCFBooleanTrue as AnyObject,
             kSecMatchLimit: kSecMatchLimitOne
         ] as CFDictionary
         
@@ -65,25 +65,56 @@ public class KeychainService {
     }
     
     public func save(record: KeychainRecord) throws {
-        guard let passwordData = record.password.data(using: .utf8) else {
-            throw KeychainServiceError.passToData
+        do {
+            guard let passwordData = record.password.data(using: .utf8) else {
+                throw KeychainServiceError.passToData
+            }
+            
+            let query = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrService: record.service,
+                kSecAttrAccount: record.username,
+                kSecValueData: passwordData
+            ] as CFDictionary
+            
+            let status = SecItemAdd(query, nil)
+            
+            guard status != errSecDuplicateItem else {
+                throw KeychainServiceError.duplicate
+            }
+            
+            guard status == errSecSuccess else {
+                throw KeychainServiceError.unknown(status)
+            }
+        } catch {
+            throw error
         }
-        
-        let query = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: record.service,
-            kSecAttrAccount: record.username,
-            kSecValueData: passwordData
-        ] as CFDictionary
-        
-        let status = SecItemAdd(query, nil)
-        
-        guard status != errSecDuplicateItem else {
-            throw KeychainServiceError.duplicate
-        }
-        
-        guard status == errSecSuccess else {
-            throw KeychainServiceError.unknown(status)
+    }
+    
+    public func update(record: KeychainRecord) throws {
+        do {
+            guard let passwordData = record.password.data(using: .utf8) else {
+                throw KeychainServiceError.passToData
+            }
+            
+            let query = [
+                kSecClass: kSecClassGenericPassword,
+                kSecAttrService: record.service,
+                
+            ] as CFDictionary
+            
+            let attributes = [
+                kSecAttrAccount: record.username,
+                kSecValueData: passwordData
+            ] as CFDictionary
+            
+            let status = SecItemUpdate(query, attributes)
+            
+            guard status == errSecSuccess else {
+                throw KeychainServiceError.unknown(status)
+            }
+        } catch {
+            throw error
         }
     }
     

@@ -12,6 +12,8 @@ import FileManagerService
 
 class FilesViewController: UIViewController {
     
+    private lazy var userDefaults = UserDefaults.standard
+    
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     
     private lazy var fileManagerService = FileManagerService()
@@ -29,6 +31,7 @@ class FilesViewController: UIViewController {
     private func getFiles() {
         if let files = fileManagerService.getFiles() {
             self.files = files
+            checkUserDefaults()
             tableView.reloadData()
         }
     }
@@ -57,9 +60,20 @@ class FilesViewController: UIViewController {
     }
     
     private func configureNavBar() {
-        title = "File Manager"
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(showImagePicker))
+    }
+    
+    private func checkUserDefaults() {
+        if let sortOption = userDefaults.string(forKey: "sort-option") {
+            sortFiles(by: sortOption)
+        }
+    }
+    
+    public func sortFiles(by option: String) {
+        files = files.sorted(by: { prev, next in
+            option == "From A to Z" ? prev.description < next.description : prev.description > next.description
+        })
+        tableView.reloadData()
     }
     
 }
@@ -101,7 +115,6 @@ extension FilesViewController: UIImagePickerControllerDelegate, UINavigationCont
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.allowsEditing = true
-        
         present(imagePicker, animated: true)
     }
     

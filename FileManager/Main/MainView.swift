@@ -10,25 +10,16 @@ import UIKit
 class MainView: UIView {
     
     public lazy var passwordTextField: UITextField = {
-        passwordTextField = TextField()
-        passwordTextField.placeholder = "Password"
-        passwordTextField.isSecureTextEntry = true
-        passwordTextField.layer.masksToBounds = true
-        passwordTextField.layer.cornerRadius = 10
-        passwordTextField.layer.borderWidth = 1
-        passwordTextField.layer.borderColor = UIColor.systemGray4.cgColor
+        passwordTextField = TextField.create(title: "Password", secure: true)
         
         return passwordTextField
     }()
     
     public lazy var acceptButton: UIButton = {
-        acceptButton = Button()
-        acceptButton.setTitle("Enter the password", for: .normal)
+        acceptButton = Button.create(title: "Enter the password")
+        
         acceptButton.setTitle("Password is incorrect", for: .disabled)
         acceptButton.isEnabled = false
-        acceptButton.backgroundColor = .systemBlue
-        acceptButton.layer.masksToBounds = true
-        acceptButton.layer.cornerRadius = 10
         
         return acceptButton
     }()

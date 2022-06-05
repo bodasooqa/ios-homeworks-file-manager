@@ -27,7 +27,7 @@ class SettingsViewController: UIViewController {
         }
     }
     
-    public var delegate: FilesViewController!
+    public weak var delegate: FilesViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +38,8 @@ class SettingsViewController: UIViewController {
     
     private func configureView() {
         view = settingsView
+        
+        settingsView.resetPasswordButton.addTarget(self, action: #selector(resetPassword), for: .touchUpInside)
         
         configurePickerView()
     }
@@ -57,6 +59,11 @@ class SettingsViewController: UIViewController {
                 pickerView.selectRow(selectedOptionIndex, inComponent: 0, animated: false)
             }
         }
+    }
+    
+    @objc private func resetPassword() {
+        let mainVC = MainViewController(isModal: true)
+        present(mainVC, animated: true)
     }
     
 }

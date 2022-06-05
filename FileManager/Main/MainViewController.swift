@@ -23,6 +23,17 @@ class MainViewController: UIViewController {
     var cachedPassword: String?
     var passwordFromKeychain: String?
     
+    let isModal: Bool
+    
+    init(isModal: Bool = false) {
+        self.isModal = isModal
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,16 +72,20 @@ class MainViewController: UIViewController {
     @objc private func onAcceptTouch() {
         if let cachedPassword = cachedPassword {
             if let passwordTextFieldText = mainView.passwordTextField.text, passwordTextFieldText == cachedPassword {
-                checkPassword()
-                
-                if let passwordFromKeychain = passwordFromKeychain {
-                    if passwordFromKeychain == passwordTextFieldText {
-                        logIn()
-                    } else {
-                        rejectLogIn()
-                    }
+                if isModal {
+                    resetPassword()
                 } else {
-                    logIn(withSave: true)
+                    checkPassword()
+                    
+                    if let passwordFromKeychain = passwordFromKeychain {
+                        if passwordFromKeychain == passwordTextFieldText {
+                            logIn()
+                        } else {
+                            rejectLogIn()
+                        }
+                    } else {
+                        logIn(withSave: true)
+                    }
                 }
             } else {
                 rejectLogIn()
@@ -97,6 +112,18 @@ class MainViewController: UIViewController {
         
         configureTabBar()
         updateAcceptButtonTitle(isEntered: false)
+    }
+    
+    private func resetPassword() {
+        if let cachedPassword = cachedPassword {
+            do {
+                try keychainService.update(record: KeychainRecord(username: Self.username, service: Self.serviceName, password: cachedPassword))
+                dismiss(animated: true)
+            } catch {
+                handleError("KeychainService error: \"\(error)\"")
+            }
+            
+        }
     }
     
     private func rejectLogIn() {

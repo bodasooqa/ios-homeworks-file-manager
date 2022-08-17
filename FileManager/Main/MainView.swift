@@ -9,6 +9,15 @@ import UIKit
 
 class MainView: UIView {
     
+    public lazy var scrollView: UIScrollView = {
+        scrollView = UIScrollView()
+        scrollView.isScrollEnabled = false
+        
+        return scrollView
+    }()
+    
+    public lazy var contentView = UIView()
+    
     public lazy var passwordTextField: UITextField = {
         passwordTextField = TextField.create(title: "Password", secure: true)
         
@@ -16,7 +25,7 @@ class MainView: UIView {
     }()
     
     public lazy var acceptButton: UIButton = {
-        acceptButton = Button.create(title: "Enter the password")
+        acceptButton = Button(title: "Enter the password")
         
         acceptButton.setTitle("Password is incorrect", for: .disabled)
         acceptButton.isEnabled = false
@@ -41,21 +50,37 @@ class MainView: UIView {
     private func configureView() {
         backgroundColor = .white
         
+        addSubview(scrollView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        
+        scrollView.addSubview(contentView)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        
         subViews.forEach { subView in
-            addSubview(subView)
+            contentView.addSubview(subView)
             subView.translatesAutoresizingMaskIntoConstraints = false
         }
-        
+
         NSLayoutConstraint.activate([
-            passwordTextField.topAnchor.constraint(equalTo: centerYAnchor, constant: -60),
-            passwordTextField.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            passwordTextField.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            passwordTextField.heightAnchor.constraint(equalToConstant: 60),
+            scrollView.widthAnchor.constraint(equalTo: safeAreaLayoutGuide.widthAnchor),
+            scrollView.heightAnchor.constraint(equalTo: safeAreaLayoutGuide.heightAnchor),
+            scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
             
-            acceptButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 20),
-            acceptButton.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            acceptButton.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            
+            acceptButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor, constant: 60),
+            acceptButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            acceptButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             acceptButton.heightAnchor.constraint(equalToConstant: 60),
+
+            passwordTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            passwordTextField.bottomAnchor.constraint(equalTo: acceptButton.topAnchor, constant: -20),
+            passwordTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            passwordTextField.heightAnchor.constraint(equalToConstant: 60),
         ])
     }
     

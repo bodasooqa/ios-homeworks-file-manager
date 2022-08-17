@@ -17,12 +17,12 @@ class SettingsViewController: UIViewController {
     
     private lazy var sortOptions = ["From A to Z", "From Z to A"]
     
-    private var selectedSortOption: String? = nil {
-        willSet {
-            if let newValue = newValue {
-                userDefaults.set(newValue, forKey: "sort-option")
-                settingsView.sortTextField.text = newValue
-                delegate.sortFiles(by: newValue)
+    private var selectedSortOption: String? {
+        didSet {
+            if let selectedSortOption = selectedSortOption {
+                userDefaults.set(selectedSortOption, forKey: "sort-option")
+                settingsView.sortTextField.text = selectedSortOption
+                delegate.sortFiles(by: selectedSortOption)
             }
         }
     }

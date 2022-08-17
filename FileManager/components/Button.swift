@@ -15,23 +15,25 @@ class Button: UIButton {
         }
     }
     
-    static func create(title: String, outlined: Bool = false, color: UIColor = .systemBlue) -> UIButton {
-        let button = Button()
-        
-        button.setTitle(title, for: .normal)
-        button.layer.masksToBounds = true
-        button.layer.cornerRadius = 10
+     required init(title: String, outlined: Bool = false, color: UIColor = .systemBlue) {
+         super.init(frame: .zero)
+         
+        setTitle(title, for: .normal)
+        layer.masksToBounds = true
+        layer.cornerRadius = 10
         
         if outlined {
-            button.backgroundColor = .white
-            button.layer.borderWidth = 1
-            button.layer.borderColor = color.cgColor
-            button.setTitleColor(color, for: .normal)
+            backgroundColor = .white
+            layer.borderWidth = 1
+            layer.borderColor = color.cgColor
+            setTitleColor(color, for: .normal)
         } else {
-            button.backgroundColor = color
+            backgroundColor = color
         }
-        
-        return button
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }

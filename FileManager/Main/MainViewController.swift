@@ -40,6 +40,22 @@ class MainViewController: UIViewController {
         configureView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
     private func configureView() {
         view = mainView
         
@@ -94,6 +110,28 @@ class MainViewController: UIViewController {
             cachedPassword = mainView.passwordTextField.text
             updateAcceptButtonTitle(isEntered: true)
         }
+    }
+    
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        
+        var keyboardFrame: CGRect = (userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        keyboardFrame = self.view.convert(keyboardFrame, from: nil)
+
+        var contentInset: UIEdgeInsets = mainView.scrollView.contentInset
+        let acceptButtonBottomOffset = mainView.frame.height - mainView.acceptButton.frame.maxY
+        
+        if acceptButtonBottomOffset < keyboardFrame.size.height {
+            let bottomContentInset = keyboardFrame.size.height - acceptButtonBottomOffset + 40
+            contentInset.bottom = bottomContentInset
+            mainView.scrollView.contentInset = contentInset
+            mainView.scrollView.setContentOffset(CGPoint(x: 0, y: bottomContentInset), animated: true)
+        }
+    }
+    
+    @objc private func keyboardWillHide() {
+        let contentInset: UIEdgeInsets = UIEdgeInsets.zero
+        mainView.scrollView.contentInset = contentInset
     }
     
     private func updateAcceptButtonTitle(isEntered: Bool) {

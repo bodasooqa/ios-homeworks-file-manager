@@ -16,7 +16,7 @@ class SettingsView: UIView {
     }()
     
     public lazy var resetPasswordButton: UIButton = {
-        resetPasswordButton = Button.create(title: "Reset the password", outlined: true, color: .systemRed)
+        resetPasswordButton = Button(title: "Reset the password", outlined: true, color: .systemRed)
         
         return resetPasswordButton
     }()

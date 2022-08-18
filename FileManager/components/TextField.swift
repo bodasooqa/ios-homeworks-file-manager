@@ -23,19 +23,22 @@ class TextField: UITextField {
         return bounds.inset(by: padding)
     }
     
-    static func create(title: String, secure: Bool = false) -> UITextField {
-        let textField = TextField()
-        textField.placeholder = title
-        textField.layer.masksToBounds = true
-        textField.layer.cornerRadius = 10
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.systemGray4.cgColor
+    required init(title: String, secure: Bool = false) {
+        super.init(frame: .zero)
+        
+        placeholder = title
+        layer.masksToBounds = true
+        layer.cornerRadius = 10
+        layer.borderWidth = 1
+        layer.borderColor = UIColor.systemGray4.cgColor
         
         if secure {
-            textField.isSecureTextEntry = true
+            isSecureTextEntry = true
         }
-        
-        return textField
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
 }

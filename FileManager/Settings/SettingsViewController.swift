@@ -19,11 +19,11 @@ class SettingsViewController: UIViewController {
     
     private var selectedSortOption: String? {
         didSet {
-            if let selectedSortOption = selectedSortOption {
-                userDefaults.set(selectedSortOption, forKey: "sort-option")
-                settingsView.sortTextField.text = selectedSortOption
-                delegate.sortFiles(by: selectedSortOption)
-            }
+            guard let selectedSortOption = selectedSortOption else { return }
+            
+            userDefaults.set(selectedSortOption, forKey: "sort-option")
+            settingsView.sortTextField.text = selectedSortOption
+            delegate.sortFiles(by: selectedSortOption)
         }
     }
     

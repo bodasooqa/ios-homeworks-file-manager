@@ -18,11 +18,7 @@ class MainView: UIView {
     
     public lazy var contentView = UIView()
     
-    public lazy var passwordTextField: UITextField = {
-        passwordTextField = TextField.create(title: "Password", secure: true)
-        
-        return passwordTextField
-    }()
+    public lazy var passwordTextField: UITextField = TextField(title: "Password", secure: true)
     
     public lazy var acceptButton: UIButton = {
         acceptButton = Button(title: "Enter the password")
@@ -33,7 +29,7 @@ class MainView: UIView {
         return acceptButton
     }()
     
-    private var subViews: [UIView] {
+    private var mainChildViews: [UIView] {
         [passwordTextField, acceptButton]
     }
     
@@ -56,7 +52,7 @@ class MainView: UIView {
         scrollView.addSubview(contentView)
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
-        subViews.forEach { subView in
+        mainChildViews.forEach { subView in
             contentView.addSubview(subView)
             subView.translatesAutoresizingMaskIntoConstraints = false
         }

@@ -69,19 +69,19 @@ class MainViewController: UIViewController {
                 passwordFromKeychain = String(decoding: data, as: UTF8.self)
             }
         } catch KeychainServiceError.notFound {
-            print("There is no correct data")
+            handleError("There is no correct data")
         } catch {
-            print("Something went wrong")
+            handleError("Something went wrong")
         }
     }
     
     @objc private func onPasswordChange() {
-        if let passwordValue = mainView.passwordTextField.text {
-            if passwordValue.count >= 4 {
-                mainView.acceptButton.isEnabled = true
-            } else {
-                mainView.acceptButton.isEnabled = false
-            }
+        guard let passwordValue = mainView.passwordTextField.text else { return }
+        
+        if passwordValue.count >= 4 {
+            mainView.acceptButton.isEnabled = true
+        } else {
+            mainView.acceptButton.isEnabled = false
         }
     }
     

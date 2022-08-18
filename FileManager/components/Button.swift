@@ -15,8 +15,8 @@ class Button: UIButton {
         }
     }
     
-     required init(title: String, outlined: Bool = false, color: UIColor = .systemBlue) {
-         super.init(frame: .zero)
+    required init(title: String, outlined: Bool = false, color: UIColor = .systemBlue) {
+        super.init(frame: .zero)
          
         setTitle(title, for: .normal)
         layer.masksToBounds = true

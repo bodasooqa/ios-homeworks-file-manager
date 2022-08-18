@@ -21,13 +21,13 @@ public class FileManagerService {
     
     public init() {}
     
-    public func getFiles() -> [URL]? {
-        guard let documentsPath = documentsPath else { return nil }
+    public func getFiles() -> [URL] {
+        guard let documentsPath = documentsPath else { return [] }
         
         do {
             return try fileManager.contentsOfDirectory(at: documentsPath, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles])
         } catch {
-            return nil
+            return []
         }
     }
     
@@ -40,7 +40,7 @@ public class FileManagerService {
         
     }
     
-    public func getFile(by url: String) -> UIImage? {
+    public func getImage(by url: String) -> UIImage? {
         return UIImage(contentsOfFile: url)
     }
     

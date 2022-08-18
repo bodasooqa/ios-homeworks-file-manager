@@ -9,19 +9,11 @@ import UIKit
 
 class SettingsView: UIView {
     
-    public lazy var sortTextField: UITextField = {
-        sortTextField = TextField.create(title: "Sort")
-        
-        return sortTextField
-    }()
+    public lazy var sortTextField: UITextField = TextField(title: "Sort")
     
-    public lazy var resetPasswordButton: UIButton = {
-        resetPasswordButton = Button(title: "Reset the password", outlined: true, color: .systemRed)
-        
-        return resetPasswordButton
-    }()
+    public lazy var resetPasswordButton: UIButton = Button(title: "Reset the password", outlined: true, color: .systemRed)
     
-    private var subViews: [UIView] {
+    private var settingsChildViews: [UIView] {
         [sortTextField, resetPasswordButton]
     }
     
@@ -38,7 +30,7 @@ class SettingsView: UIView {
     private func configureView() {
         backgroundColor = .white
         
-        subViews.forEach { subView in
+        settingsChildViews.forEach { subView in
             addSubview(subView)
             subView.translatesAutoresizingMaskIntoConstraints = false
         }

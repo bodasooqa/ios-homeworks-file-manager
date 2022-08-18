@@ -12,11 +12,13 @@ import FileManagerService
 
 class FilesViewController: UIViewController {
     
-    private lazy var userDefaults = UserDefaults.standard
+    private static let cellIdentifier = "cell"
     
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private let userDefaults = UserDefaults.standard
     
-    private lazy var fileManagerService = FileManagerService()
+    private let tableView = UITableView(frame: .zero, style: .grouped)
+    
+    private let fileManagerService = FileManagerService()
     
     private var files: [URL] = []
     
@@ -29,11 +31,9 @@ class FilesViewController: UIViewController {
     }
     
     private func getFiles() {
-        if let files = fileManagerService.getFiles() {
-            self.files = files
-            checkUserDefaults()
-            tableView.reloadData()
-        }
+        self.files = fileManagerService.getFiles()
+        checkUserDefaults()
+        tableView.reloadData()
     }
     
     private func configureView() {
@@ -46,7 +46,7 @@ class FilesViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Self.cellIdentifier)
         
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,6 +78,8 @@ class FilesViewController: UIViewController {
     
 }
 
+// MARK: - TableView
+
 extension FilesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -85,13 +87,13 @@ extension FilesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: Self.cellIdentifier, for: indexPath)
         
         let path = files[indexPath.row].path
         let splitedPath = files[indexPath.row].path.split(separator: "/")
         
         cell.textLabel?.text = String(splitedPath[splitedPath.count - 1])
-        cell.imageView?.image = fileManagerService.getFile(by: path)
+        cell.imageView?.image = fileManagerService.getImage(by: path)
 
         return cell
     }
@@ -108,6 +110,8 @@ extension FilesViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
 }
+
+// MARK: - ImagePicker
 
 extension FilesViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
